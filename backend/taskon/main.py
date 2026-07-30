@@ -1,5 +1,5 @@
 from uuid import uuid4
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
@@ -35,7 +35,7 @@ def read_tasks():
     return tasks
 
 
-@app.post("/tasks")
+@app.post("/tasks", status_code=status.HTTP_201_CREATED)
 def create_task(payload: TaskCreateScheme) -> TaskScheme:
     new_task = TaskScheme(id=str(uuid4()), title=payload.title, completed=False)
     tasks.append(new_task)
@@ -59,3 +59,12 @@ def update_task(task_id: str, payload: TaskUpdateScheme) -> TaskScheme:
         break
 
     return updating_task
+
+
+@app.delete("/tasks/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_task(task_id: str):
+    for task in tasks:
+        if task.id != task_id:
+            continue
+        tasks.remove(task)
+        break
