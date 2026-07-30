@@ -22,17 +22,40 @@ class TaskCreateScheme(BaseModel):
     title: str
 
 
+class TaskUpdateScheme(BaseModel):
+    title: str | None = None
+    completed: bool | None = None
+
+
 tasks: list[TaskScheme] = []
 
 
-@app.get("/")
+@app.get("/tasks")
 def read_tasks():
     return tasks
 
 
-@app.post("/")
+@app.post("/tasks")
 def create_task(payload: TaskCreateScheme) -> TaskScheme:
     new_task = TaskScheme(id=str(uuid4()), title=payload.title, completed=False)
     tasks.append(new_task)
 
     return new_task
+
+
+@app.patch("/tasks/{task_id}")
+def update_task(task_id: str, payload: TaskUpdateScheme) -> TaskScheme:
+    updating_task = None
+    for task in tasks:
+        if task.id != task_id:
+            continue
+
+        updating_task = task
+        if payload.title is not None:
+            task.title = payload.title
+        if payload.completed is not None:
+            task.completed = payload.completed
+
+        break
+
+    return updating_task
