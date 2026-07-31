@@ -1,5 +1,4 @@
 from contextlib import asynccontextmanager
-from typing import Type
 from uuid import uuid4
 from fastapi import Depends, FastAPI, status, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
