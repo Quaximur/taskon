@@ -1,0 +1,14 @@
+services:
+  postgres:
+    container_name: taskon_postgres
+    image: postgres:17
+    environment:
+      POSTGRES_DB: taskon_db
+      POSTGRES_USER: taskon_admin
+      POSTGRES_PASSWORD: adm
+    ports:
+      - 15432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:
