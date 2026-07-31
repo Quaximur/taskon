@@ -62,7 +62,7 @@ class TaskUpdateDto(BaseModel):
     completed: bool | None = None
 
 
-def task_orm_to_dto(task: Task | Type[Task]) -> TaskDto:
+def task_orm_to_dto(task: Task) -> TaskDto:
     return TaskDto(id=task.id, title=task.title, completed=task.completed)
 
 
@@ -83,7 +83,7 @@ def create_task(payload: TaskCreateDto, db: Session = Depends(get_db)) -> TaskDt
 
 @app.patch("/tasks/{task_id}")
 def update_task(task_id: str, payload: TaskUpdateDto, db: Session = Depends(get_db)) -> TaskDto:
-    updating_task = db.get(Task, task_id)
+    updating_task: Task | None  = db.get(Task, task_id)
     if updating_task is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
 
